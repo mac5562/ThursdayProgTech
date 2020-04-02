@@ -9,6 +9,15 @@ public class Account implements Subject {
     private double balance;
     private String ownerName;
     private UUID id;
+    private String state;
+
+    @Override
+    public String getState(){
+        return state;
+    }
+    protected void setState(String state){
+        this.state=state;
+    }
 
     public Account(double balance, String ownerName) {
         this.balance = balance;
@@ -28,20 +37,23 @@ public class Account implements Subject {
     }
 
     @Override
-    public void notifyObservers(String message) {
+    public void notifyObservers() {
         for (Observer obs: observers) {
-            System.out.println(obs.notifyObserver(message));
+            System.out.println(obs.notifyObserver());
         }
     }
 
     public void withdraw(Double amount){
-        this.balance-=amount*calculateBankingFee();
-        notifyObservers("Withdraw");
+
+        double modifiedAmount =
+        this.balance-=amount*calculateBankingFee(withdrawStrategy,amount);
+        setState("Whitdrawn");
+        notifyObservers();
 
 
     }
 
-    private Double calculateBankingFee() {
+    private Double calculateBankingFee(WithdrawStrategy strategy, Double amount) {
         return null;
     }
 
